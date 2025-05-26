@@ -1,4 +1,5 @@
 import os
+import json
 import logging
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
@@ -17,12 +18,13 @@ logger = logging.getLogger(__name__)
 # Load your bot token from environment variables
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 
-# Initialize Google Drive API client using service account
-SCOPES = ['https://www.googleapis.com/auth/drive']
-SERVICE_ACCOUNT_FILE = 'service_account.json'  # Make sure this file is in your project folder
+# Load Google service account credentials JSON from environment variable
+service_account_info = json.loads(os.getenv("SERVICE_ACCOUNT_JSON"))
 
-credentials = service_account.Credentials.from_service_account_file(
-    SERVICE_ACCOUNT_FILE, scopes=SCOPES
+# Initialize Google Drive API client using service account info from env var
+SCOPES = ['https://www.googleapis.com/auth/drive']
+credentials = service_account.Credentials.from_service_account_info(
+    service_account_info, scopes=SCOPES
 )
 drive_service = build('drive', 'v3', credentials=credentials)
 
